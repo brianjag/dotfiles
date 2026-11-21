@@ -384,7 +384,6 @@ install_dotfiles() {
 
     # Terminal and Editor configs
     [ -f "$DOTFILES_DIR/.alacritty.toml" ] && link_target "$DOTFILES_DIR/.alacritty.toml" "$HOME/.alacritty.toml"
-    [ -d "$DOTFILES_DIR/.mlterm" ] && link_target "$DOTFILES_DIR/.mlterm" "$HOME/.mlterm"
     [ -f "$DOTFILES_DIR/.vimrc" ] && link_target "$DOTFILES_DIR/.vimrc" "$HOME/.vimrc"
 
     # Helper scripts

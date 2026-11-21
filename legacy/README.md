@@ -21,6 +21,7 @@ inert unless you deliberately use it.
 | `x11/ratpoison/.ratpoisonrc` | `~/.ratpoisonrc` | X11 | `ratpoison` |
 | `x11/jwm/.jwmrc` | `~/.jwmrc` | X11 | `jwm` |
 | `x11/blackbox/.blackbox/menu` | `~/.blackbox/menu` | X11 | `blackbox` |
+| `x11/mlterm/.mlterm` | `~/.mlterm` | X11 | `mlterm` |
 | `x11/Xresources` | `~/.Xresources` | X11 | `rxvt-unicode` |
 
 ## Terminal (urxvt)
@@ -118,3 +119,23 @@ One entry needs editing before use: `midori` is effectively gone from Debian.
 
 To capture settings again: start blackbox, change nothing, exit — a default
 `~/.blackboxrc` appears, and it can be edited from there.
+
+## mlterm
+
+Kept for X11 revival only. mlterm had genuine bidi support, but it is
+**X11-only** (so Sway would need XWayland) and was dropped from Trixie — last
+packaged in bookworm, with sid still carrying 3.9.4. There is no native
+Wayland replacement in this setup: RTL-capable alternatives pull in Qt/KDE,
+and this desktop deliberately stays GTK-only, so RTL terminal support is
+dropped.
+
+On a revived X11 box:
+
+```bash
+sudo apt install mlterm
+ln -s ~/dotfiles/legacy/x11/mlterm/.mlterm ~/.mlterm
+```
+
+The config carries the Catppuccin Mocha palette and 18px font, matching
+alacritty. On bookworm this works natively; on Trixie you would need the sid
+build (`mlterm 3.9.4-3`).

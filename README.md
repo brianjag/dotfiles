@@ -62,7 +62,7 @@ Commands:
 * **Wallpaper**: [Josh Nuttall](https://unsplash.com/photos/XVTWFHcNIko) on Unsplash, full resolution available there — the photo featured on The Minimalists' *[Valuable Things](https://www.theminimalists.com/valuable/)*. Tracked as `wallpaper.jpg` (1920x1280; Sway's `fill` crops it to the screen ratio)
 * **Screenshots**: `grim` + `slurp` + `wl-clipboard`
 * **File Managers**: `thunar` (GUI) and `lf` (terminal)
-* **Terminals**: `alacritty` (primary) and `mlterm` (RTL text)
+* **Terminals**: `alacritty`
 * **Text Editor**: `l3afpad`
 * **Calculator**: `mate-calc`
 * **Image Viewer**: `imv`
