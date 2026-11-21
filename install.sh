@@ -330,6 +330,22 @@ install_desktop_apps() {
         rm -f "$TMP_DEB"
     fi
 
+    # nwg-dock
+    # Not packaged in Trixie (only sid/forky), so install the pinned Debian
+    # build directly. All of its dependencies (libgtk-3-0t64, libglib2.0-0t64,
+    # libgtk-layer-shell0, ...) are available in Trixie. If it ever lands in
+    # Trixie or backports, move it back to the 'packages' manifest.
+    if ! command -v nwg-dock &>/dev/null; then
+        log_info "Installing nwg-dock (not in Trixie repositories)..."
+        NWG_DEB=$(mktemp --suffix=.deb)
+        if curl -fsSL "https://deb.debian.org/debian/pool/main/n/nwg-dock/nwg-dock_0.4.3-1_amd64.deb" -o "$NWG_DEB"; then
+            sudo apt install -y "$NWG_DEB" || log_warn "nwg-dock dependencies not satisfied"
+        else
+            log_warn "Could not download nwg-dock"
+        fi
+        rm -f "$NWG_DEB"
+    fi
+
     log_success "Desktop applications installed."
 }
 

@@ -6,7 +6,6 @@ swaylock
 waybar
 wofi
 mako-notifier
-nwg-dock
 nwg-look
 grim
 slurp
@@ -61,10 +60,9 @@ jq
 libnotify-bin
 unzip
 wget
-curl
 vim
 zsh
-neofetch
+fastfetch
 plocate
 imagemagick
 ffmpeg

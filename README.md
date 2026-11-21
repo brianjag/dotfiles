@@ -8,9 +8,10 @@ Everything is driven by human-readable plain-text manifests and a single modular
 
 ## Quick Start on a Fresh Debian Install
 
-Run directly with a single command via `curl` (no manual git installation or cloning required):
+Run directly with a single command via `curl` (no manual git installation or cloning required). Minimal Debian installs do not ship `curl`, so install it first — it is the one prerequisite the script cannot provide for itself:
 
 ```bash
+sudo apt install curl
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/brianjag/dotfiles/main/install.sh)"
 ```
 
@@ -53,7 +54,7 @@ Commands:
 
 * **Window Manager**: [Sway](https://swaywm.org/) (Wayland i3-compatible compositor)
 * **Status Bar**: [Waybar](https://github.com/Alexays/Waybar) (with workspace scroll, weather, clock, audio, bluetooth, battery, tray)
-* **Dock**: `nwg-dock` (GTK3 dock with pinned favorites and auto-hide)
+* **Dock**: `nwg-dock` (GTK3 dock with pinned favorites and auto-hide; installed from the Debian sid build — not packaged in Trixie)
 * **Application Launcher**: `wofi` (fuzzy search desktop applications)
 * **Notifications**: `mako` (lightweight Wayland notification daemon)
 * **Night Light**: `wlsunset` (gamma temperature transitions)
