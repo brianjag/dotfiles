@@ -45,6 +45,7 @@ gparted
 gsmartcontrol
 virt-manager
 bleachbit
+flatpak
 
 # Database
 mariadb-server

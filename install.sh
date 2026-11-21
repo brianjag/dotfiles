@@ -114,6 +114,13 @@ install_zsh() {
 }
 
 install_flatpaks() {
+    # Also needed when this stage is run on its own (`./install.sh flatpaks`),
+    # before the APT manifest has been applied.
+    if ! command -v flatpak &>/dev/null; then
+        log_info "Installing flatpak..."
+        sudo apt install -y flatpak
+    fi
+
     log_info "Configuring Flatpak & Flathub..."
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
@@ -449,4 +456,7 @@ main() {
     esac
 }
 
-main "$@"
+# Only run when executed directly, so the functions can be sourced for testing.
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    main "$@"
+fi
