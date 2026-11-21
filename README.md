@@ -42,7 +42,7 @@ Commands:
   apt         Install APT packages from 'packages' and enable services (mariadb, tlp)
   zsh         Install oh-my-zsh and zsh-autosuggestions
   flatpaks    Configure Flathub and install Flatpaks from 'flatpaks'
-  cli         Install manual CLI tools (nvm + Node LTS, aws, gh, claude, opencode, agy, ollama, pipx)
+  cli         Install manual CLI tools (nvm + Node LTS, aws, gh, claude, opencode, ollama, pipx)
   apps        Install manual desktop apps (Chrome, LibreWolf, Calibre, Obsidian, Beekeeper, etc.)
   dotfiles    Symlink Sway, Waybar, Mako, Wofi, terminal configs, helper scripts, and wallpaper
   help        Display help message
@@ -70,7 +70,7 @@ Commands:
 * **Pomodoro**: Waybar module driven by `bin/pomodoro` (25 min work / 5 min break, click to start/pause, right-click to reset)
 * **Flatpaks**: Insomnia, Spotify, Draw.io, CPU-X, KeePassXC, Audacity, MuseScore, Zeal, Ferdium, SweetHome3D, Pinta, GeoGebra. The installer exports Flatpak's `XDG_DATA_DIRS` paths itself; Debian's `/etc/profile.d/flatpak.sh` covers later logins.
 * **Manual Desktop Apps**: JetBrains Toolbox AppImage, RustDesk, Google Chrome, LibreWolf, Calibre, Obsidian, Beekeeper Studio (`mariadb-server` via APT), Zoom, OnlyOffice, VS Code, Microsoft Edge, Dropbox.
-* **CLI Runtimes & Tools**: `nvm` (+ Node LTS), AWS CLI v2, GitHub CLI (`gh`, also configures git credentials), Claude Code, OpenCode, Google Antigravity CLI (`agy`), Ollama, `yt-dlp` (via pipx), `buku` (via pipx), `beets` (via pipx), `tmux`, `pwgen`, `diceware`.
+* **CLI Runtimes & Tools**: `nvm` (+ Node LTS), AWS CLI v2, GitHub CLI (`gh`, also configures git credentials), Claude Code, OpenCode, Ollama, `yt-dlp` (via pipx), `buku` (via pipx), `beets` (via pipx), `tmux`, `pwgen`, `diceware`.
 
 ---
 

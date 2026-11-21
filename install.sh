@@ -199,19 +199,13 @@ install_cli_tools() {
         curl -fsSL https://opencode.ai/install | bash || true
     fi
 
-    # 6. Google Antigravity CLI (agy)
-    if ! command -v agy &>/dev/null; then
-        log_info "Installing Google Antigravity CLI (agy)..."
-        curl -fsSL https://antigravity.google/cli/install.sh | bash || true
-    fi
-
-    # 7. Ollama
+    # 6. Ollama
     if ! command -v ollama &>/dev/null; then
         log_info "Installing Ollama..."
         curl -fsSL https://ollama.com/install.sh | sh || true
     fi
 
-    # 8. Python CLI tools (yt-dlp, buku, beets) via pipx
+    # 7. Python CLI tools (yt-dlp, buku, beets) via pipx
     log_info "Ensuring pipx path is configured..."
     pipx ensurepath || true
 
@@ -412,7 +406,7 @@ show_help() {
     echo "  apt         Install APT packages and configure services"
     echo "  zsh         Install oh-my-zsh and zsh-autosuggestions"
     echo "  flatpaks    Configure Flathub and install Flatpak apps"
-    echo "  cli         Install manual CLI tools (nvm, aws, gh, claude, opencode, agy, ollama, pipx)"
+    echo "  cli         Install manual CLI tools (nvm, aws, gh, claude, opencode, ollama, pipx)"
     echo "  apps        Install manual desktop apps (Chrome, LibreWolf, Calibre, Obsidian, etc.)"
     echo "  dotfiles    Symlink Sway, Waybar, Mako, Wofi, terminal configs, helper scripts, and wallpaper"
     echo "  help        Display this help message"
