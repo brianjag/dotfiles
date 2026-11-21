@@ -1,0 +1,148 @@
+#!/usr/bin/env bash
+#
+# pomodoro - minimal Pomodoro timer that drives the Waybar custom module.
+#
+# State lives in $XDG_RUNTIME_DIR so it is cleared on logout. There is no
+# daemon: `status` is polled by Waybar once per second and advances
+# work -> break -> work as deadlines pass, firing a notification each time.
+#
+#   pomodoro start    start a work session
+#   pomodoro break    start a break
+#   pomodoro toggle   start / pause / resume
+#   pomodoro status   Waybar JSON (text, class, tooltip)
+#   pomodoro stop     clear the timer
+#
+set -euo pipefail
+
+STATE_DIR="${XDG_RUNTIME_DIR:-/tmp}/pomodoro-$UID"
+STATE="$STATE_DIR/state"
+WORK_MIN="${POMODORO_WORK_MIN:-25}"
+BREAK_MIN="${POMODORO_BREAK_MIN:-5}"
+
+MODE=idle
+END=0
+LEFT=""
+
+load() {
+    [ -f "$STATE" ] || return 0
+    # shellcheck disable=SC1090
+    . "$STATE"
+}
+
+save() {
+    mkdir -p "$STATE_DIR"
+    printf 'MODE=%q\nEND=%q\nLEFT=%q\n' "$MODE" "$END" "$LEFT" >"$STATE"
+}
+
+now() { date +%s; }
+
+remaining() {
+    if [ "$MODE" = idle ]; then
+        echo 0
+        return
+    fi
+    if [ -n "$LEFT" ]; then
+        echo "$LEFT"
+        return
+    fi
+    local r=$((END - $(now)))
+    [ "$r" -lt 0 ] && r=0
+    echo "$r"
+}
+
+fmt() { printf '%02d:%02d' $(($1 / 60)) $(($1 % 60)); }
+
+notify() {
+    command -v notify-send >/dev/null 2>&1 || return 0
+    notify-send -a Pomodoro "$1" "$2" 2>/dev/null || true
+}
+
+start_mode() {
+    MODE="$1"
+    LEFT=""
+    if [ "$MODE" = work ]; then
+        END=$(($(now) + WORK_MIN * 60))
+        notify "Focus for ${WORK_MIN} minutes" "Pomodoro started"
+    else
+        END=$(($(now) + BREAK_MIN * 60))
+        notify "Break for ${BREAK_MIN} minutes" "Step away from the screen"
+    fi
+    save
+}
+
+# Returns 0 if it advanced to the next phase, 1 otherwise.
+advance_if_due() {
+    [ "$MODE" = idle ] && return 1
+    [ -n "$LEFT" ] && return 1
+    [ "$(now)" -lt "$END" ] && return 1
+
+    if [ "$MODE" = work ]; then
+        notify "Break time" "Work session finished"
+        start_mode break
+    else
+        notify "Back to work" "Break finished"
+        start_mode work
+    fi
+    return 0
+}
+
+status() {
+    load
+    advance_if_due || true
+
+    local secs text class tooltip
+    secs="$(remaining)"
+
+    if [ "$MODE" = idle ]; then
+        text="--:--"
+        class="idle"
+        tooltip="Pomodoro idle - click to start ${WORK_MIN}m"
+    else
+        text="$(fmt "$secs")"
+        class="$MODE"
+        tooltip="${MODE^} - ${WORK_MIN}m work / ${BREAK_MIN}m break"
+        if [ -n "$LEFT" ]; then
+            class="paused"
+            tooltip="$tooltip (paused)"
+        fi
+    fi
+
+    printf '{"text":"%s","class":"%s","tooltip":"%s"}\n' \
+        "$text" "$class" "$tooltip"
+}
+
+toggle() {
+    load
+    advance_if_due && return 0
+
+    case "$MODE" in
+        idle) start_mode work ;;
+        *)
+            if [ -n "$LEFT" ]; then
+                END=$(($(now) + LEFT))
+                LEFT=""
+                save
+            else
+                LEFT="$(remaining)"
+                END=0
+                save
+            fi
+            ;;
+    esac
+}
+
+case "${1:-status}" in
+    start)  load; start_mode work ;;
+    break)  load; start_mode break ;;
+    toggle) toggle ;;
+    status) status ;;
+    stop)
+        MODE=idle END=0 LEFT=""
+        rm -f "$STATE"
+        notify "Pomodoro stopped" "Timer cleared"
+        ;;
+    *)
+        echo "usage: pomodoro [start|break|toggle|status|stop]" >&2
+        exit 2
+        ;;
+esac

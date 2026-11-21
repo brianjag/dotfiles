@@ -1,0 +1,9 @@
+mode=drun
+width=480
+height=360
+allow_images=true
+image_size=28
+prompt=Search applications...
+term=alacritty
+insensitive=true
+no_actions=true

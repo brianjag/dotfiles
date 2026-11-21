@@ -1,0 +1,19 @@
+# Catppuccin Mocha, mirroring ~/.alacritty.toml.
+# See man 1 mlterm, "Color Configuration File".
+black=#45475a
+red=#f38ba8
+green=#a6e3a1
+yellow=#f9e2af
+blue=#89b4fa
+magenta=#f5c2e7
+cyan=#94e2d5
+white=#bac2de
+
+hl_black=#585b70
+hl_red=#f38ba8
+hl_green=#a6e3a1
+hl_yellow=#f9e2af
+hl_blue=#89b4fa
+hl_magenta=#f5c2e7
+hl_cyan=#94e2d5
+hl_white=#a6adc8

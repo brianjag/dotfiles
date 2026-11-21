@@ -1,3 +1,11 @@
 termtype = xterm-256color
 scrollbar_mode = none
 blink_cursor = true
+
+# Catppuccin Mocha, matching ~/.alacritty.toml. Palette overrides for the
+# 16 ANSI colors live in ~/.mlterm/color.
+bg_color = #1e1e2e
+fg_color = #cdd6f4
+
+# Alacritty's 14.0pt is roughly 18px at 96dpi
+fontsize = 18

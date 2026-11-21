@@ -1,0 +1,123 @@
+* {
+    border: none;
+    border-radius: 0;
+    font-family: "Hack", "Font Awesome 6 Free", monospace;
+    font-size: 13px;
+    min-height: 0;
+}
+
+window#waybar {
+    background: rgba(30, 30, 46, 0.85);
+    color: #cdd6f4;
+    border-bottom: 2px solid rgba(137, 180, 250, 0.4);
+}
+
+#workspaces button {
+    padding: 0 8px;
+    background: transparent;
+    color: #a6adc8;
+    border-bottom: 2px solid transparent;
+}
+
+#workspaces button:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+#workspaces button.focused {
+    color: #89b4fa;
+    border-bottom: 2px solid #89b4fa;
+    font-weight: bold;
+}
+
+#workspaces button.urgent {
+    color: #f38ba8;
+    border-bottom: 2px solid #f38ba8;
+}
+
+#mode {
+    background: #f38ba8;
+    color: #11111b;
+    padding: 0 8px;
+    font-weight: bold;
+}
+
+#window {
+    color: #bac2de;
+    padding: 0 10px;
+}
+
+#clock,
+#battery,
+#pulseaudio,
+#bluetooth,
+#network,
+#tray,
+#custom-weather,
+#custom-pomodoro {
+    padding: 0 10px;
+    margin: 3px 2px;
+    border-radius: 6px;
+    background: rgba(49, 50, 68, 0.7);
+    color: #cdd6f4;
+}
+
+#network.disconnected {
+    color: #f38ba8;
+}
+
+#bluetooth.disabled {
+    color: #6c7086;
+}
+
+#bluetooth.connected {
+    color: #89b4fa;
+}
+
+#battery.warning {
+    color: #fab387;
+}
+
+#battery.critical {
+    color: #f38ba8;
+    animation-name: blink;
+    animation-duration: 1s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes blink {
+    to {
+        background-color: #f38ba8;
+        color: #11111b;
+    }
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    -gtk-icon-effect: highlight;
+    background-color: #eb4d4b;
+}
+
+#custom-pomodoro {
+    font-family: "Hack", monospace;
+}
+
+#custom-pomodoro.work {
+    color: #f38ba8;
+}
+
+#custom-pomodoro.break {
+    color: #a6e3a1;
+}
+
+#custom-pomodoro.paused {
+    color: #f9e2af;
+}
+
+#custom-pomodoro.idle {
+    color: #6c7086;
+}

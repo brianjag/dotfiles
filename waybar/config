@@ -1,0 +1,101 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 34,
+    "spacing": 6,
+    "modules-left": ["sway/workspaces", "sway/mode"],
+    "modules-center": ["sway/window"],
+    "modules-right": ["custom/pomodoro", "custom/weather", "pulseaudio", "bluetooth", "network", "battery", "tray", "clock"],
+
+    "sway/workspaces": {
+        "disable-scroll": false,
+        "all-outputs": true,
+        "format": "{name}",
+        "persistent-workspaces": {
+            "1": [],
+            "2": [],
+            "3": [],
+            "4": [],
+            "5": []
+        }
+    },
+
+    "sway/mode": {
+        "format": "<span style=\"italic\">{}</span>"
+    },
+
+    "sway/window": {
+        "max-length": 50,
+        "separate-outputs": true
+    },
+
+    "tray": {
+        "icon-size": 18,
+        "spacing": 10
+    },
+
+    "clock": {
+        "format": "{:%a %b %d  %H:%M}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    },
+
+    "battery": {
+        "states": {
+            "warning": 30,
+            "critical": 15
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": "⚡ {capacity}%",
+        "format-plugged": "🔌 {capacity}%",
+        "format-icons": ["🪫", "🔋"]
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "🔇 Muted",
+        "format-icons": {
+            "default": ["🔈", "🔉", "🔊"]
+        },
+        "on-click": "pamixer -t",
+        "on-scroll-up": "pamixer -i 5",
+        "on-scroll-down": "pamixer -d 5"
+    },
+
+    "bluetooth": {
+        "format": " {status}",
+        "format-connected": " {device_alias}",
+        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+        "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
+        "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
+        "on-click": "bluetoothctl power toggle || true",
+        "on-click-right": "alacritty -e bluetoothctl"
+    },
+
+    "network": {
+        "format-wifi": " {essid} ({signalStrength}%)",
+        "format-ethernet": "󰈀 {ipaddr}",
+        "tooltip-format": "{ifname} via {gwaddr} 󰈀",
+        "format-linked": "󰈀 {ifname} (No IP)",
+        "format-disconnected": "󰤭 Disconnected",
+        "format-alt": "{ifname}: {ipaddr}/{cidr}",
+        "on-click": "alacritty -e nmtui",
+        "on-click-right": "nm-connection-editor"
+    },
+
+    "custom/pomodoro": {
+        "exec": "$HOME/.local/bin/pomodoro status",
+        "return-type": "json",
+        "interval": 1,
+        "tooltip": true,
+        "on-click": "$HOME/.local/bin/pomodoro toggle",
+        "on-click-right": "$HOME/.local/bin/pomodoro stop"
+    },
+
+    "custom/weather": {
+        "format": "{}",
+        "tooltip": true,
+        "interval": 1800,
+        "exec": "curl -s 'https://wttr.in/Buenos+Aires?format=%c+%t' || echo '🌤️ --°C'"
+    }
+}
