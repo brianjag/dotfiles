@@ -457,6 +457,8 @@ main() {
 }
 
 # Only run when executed directly, so the functions can be sourced for testing.
-if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+# BASH_SOURCE is unset when the script is piped in via `bash -c "$(curl ...)"`,
+# which is the documented remote-install path, so treat that as direct too.
+if [[ -z "${BASH_SOURCE[0]:-}" || "${BASH_SOURCE[0]}" == "$0" ]]; then
     main "$@"
 fi
