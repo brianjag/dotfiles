@@ -13,7 +13,7 @@ lines = 30
 size = 14.0
 
 [font.normal]
-family = "Fira Mono"
+family = "Fira Code"
 
 [cursor.style]
 shape = "Beam"

@@ -2,7 +2,7 @@ window {
     background-color: rgba(30, 30, 46, 0.95);
     border: 2px solid #89b4fa;
     border-radius: 10px;
-    font-family: "Hack", monospace;
+    font-family: "Cascadia Code", monospace;
     font-size: 14px;
 }
 

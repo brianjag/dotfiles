@@ -1,7 +1,7 @@
 * {
     border: none;
     border-radius: 0;
-    font-family: "Hack", "Font Awesome 6 Free", monospace;
+    font-family: "Cascadia Code", "Font Awesome 6 Free", monospace;
     font-size: 13px;
     min-height: 0;
 }
@@ -103,7 +103,7 @@ window#waybar {
 }
 
 #custom-pomodoro {
-    font-family: "Hack", monospace;
+    font-family: "Cascadia Code", monospace;
 }
 
 #custom-pomodoro.work {

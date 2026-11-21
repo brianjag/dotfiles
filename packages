@@ -15,8 +15,9 @@ wlsunset
 pamixer
 brightnessctl
 xdg-desktop-portal-wlr
+fonts-cascadia-code
+fonts-firacode
 fonts-font-awesome
-fonts-hack
 
 # Desktop Applications
 alacritty

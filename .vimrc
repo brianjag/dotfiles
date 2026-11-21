@@ -1,4 +1,3 @@
 set number
 syntax on
-
-:set guifont=Inconsolata\ 12
+set guifont=Fira\ Code\ 12

@@ -1,6 +1,6 @@
 # Mako Notification Daemon Configuration
 
-font=Hack 11
+font=Cascadia Code 11
 background-color=#1e1e2ee6
 text-color=#cdd6f4
 border-color=#89b4faff
