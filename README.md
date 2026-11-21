@@ -68,7 +68,7 @@ Commands:
 * **Image Viewer**: `imv`
 * **PDF Viewer**: `mupdf`
 * **Pomodoro**: Waybar module driven by `bin/pomodoro` (25 min work / 5 min break, click to start/pause, right-click to reset)
-* **Flatpaks**: Insomnia, Spotify, Draw.io, CPU-X, KeePassXC, Audacity, MuseScore, Zeal, Ferdium, SweetHome3D, Pinta, GeoGebra.
+* **Flatpaks**: Insomnia, Spotify, Draw.io, CPU-X, KeePassXC, Audacity, MuseScore, Zeal, Ferdium, SweetHome3D, Pinta, GeoGebra. The installer exports Flatpak's `XDG_DATA_DIRS` paths itself; Debian's `/etc/profile.d/flatpak.sh` covers later logins.
 * **Manual Desktop Apps**: JetBrains Toolbox AppImage, RustDesk, Google Chrome, LibreWolf, Calibre, Obsidian, Beekeeper Studio (`mariadb-server` via APT), Zoom, OnlyOffice, VS Code, Microsoft Edge, Dropbox.
 * **CLI Runtimes & Tools**: `nvm` (+ Node LTS), AWS CLI v2, GitHub CLI (`gh`, also configures git credentials), Claude Code, OpenCode, Google Antigravity CLI (`agy`), Ollama, `yt-dlp` (via pipx), `buku` (via pipx), `beets` (via pipx), `tmux`, `pwgen`, `diceware`.
 

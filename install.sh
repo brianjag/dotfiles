@@ -121,6 +121,18 @@ install_flatpaks() {
         sudo apt install -y flatpak
     fi
 
+    # Debian's flatpak package adds these via /etc/profile.d, but this script
+    # may have just installed flatpak into a session started before that
+    # existed. Export them here so apps are visible and install is warning-free.
+    export XDG_DATA_DIRS="${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+    for dir in /var/lib/flatpak/exports/share "$HOME/.local/share/flatpak/exports/share"; do
+        case ":$XDG_DATA_DIRS:" in
+            *":$dir:"*) ;;
+            *) XDG_DATA_DIRS="$XDG_DATA_DIRS:$dir" ;;
+        esac
+    done
+    export XDG_DATA_DIRS
+
     log_info "Configuring Flatpak & Flathub..."
     flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
@@ -215,16 +227,35 @@ install_cli_tools() {
     log_success "CLI tools installed."
 }
 
+# Download a .deb to a temp file, install it with apt, and always clean up.
+# A label is used for messages because some URLs have opaque query strings.
+install_deb() {
+    local label="$1"
+    local url="$2"
+    local tmp_deb
+
+    tmp_deb=$(mktemp --suffix=.deb)
+    if ! curl -fsSL "$url" -o "$tmp_deb"; then
+        log_warn "Could not download $label"
+        rm -f "$tmp_deb"
+        return 0
+    fi
+    if ! sudo apt install -y "$tmp_deb"; then
+        log_warn "Failed to install $label"
+        rm -f "$tmp_deb"
+        return 0
+    fi
+    rm -f "$tmp_deb"
+    log_success "$label installed."
+}
+
 install_desktop_apps() {
     log_info "Installing manual desktop applications from official sources..."
 
     # Google Chrome
     if ! command -v google-chrome &>/dev/null && ! command -v google-chrome-stable &>/dev/null; then
         log_info "Installing Google Chrome..."
-        TMP_DEB=$(mktemp --suffix=.deb)
-        curl -sSL https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -o "$TMP_DEB"
-        sudo apt install -y "$TMP_DEB"
-        rm -f "$TMP_DEB"
+        install_deb "Google Chrome" "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
     fi
 
     # LibreWolf
@@ -244,39 +275,30 @@ install_desktop_apps() {
     # Obsidian
     if ! command -v obsidian &>/dev/null; then
         log_info "Installing Obsidian..."
-        OBS_URL=$(curl -sL https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest | jq -r '.assets[] | select(.name | endswith(".deb") and (contains("arm") | not)) | .browser_download_url' | head -n 1)
+        OBS_URL=$(curl -sL https://api.github.com/repos/obsidianmd/obsidian-releases/releases/latest | jq -r '.assets[] | select(.name | endswith("_amd64.deb")) | .browser_download_url' | head -n 1)
         if [ -n "$OBS_URL" ] && [ "$OBS_URL" != "null" ]; then
-            TMP_DEB=$(mktemp --suffix=.deb)
-            curl -sSL "$OBS_URL" -o "$TMP_DEB"
-            sudo apt install -y "$TMP_DEB"
-            rm -f "$TMP_DEB"
+            install_deb "Obsidian" "$OBS_URL"
         fi
     fi
 
-    # Beekeeper Studio
+    # Beekeeper Studio — the vendor .deb installs its own apt repo
     if ! command -v beekeeper-studio &>/dev/null; then
-        log_info "Configuring Beekeeper Studio repository..."
-        curl -fsSL https://deb.beekeeperstudio.io/beekeeper.key | sudo gpg --dearmor --yes -o /usr/share/keyrings/beekeeper.gpg
-        echo "deb [signed-by=/usr/share/keyrings/beekeeper.gpg] https://deb.beekeeperstudio.io stable main" | sudo tee /etc/apt/sources.list.d/beekeeper-studio.list
-        sudo apt update && sudo apt install -y beekeeper-studio || log_warn "Beekeeper Studio install failed"
+        BEEKEEPER_URL=$(curl -sL https://api.github.com/repos/beekeeper-studio/beekeeper-studio/releases/latest | jq -r '.assets[] | select(.name | test("^beekeeper-studio_.*_amd64\\.deb$")) | .browser_download_url' | head -n 1)
+        if [ -n "$BEEKEEPER_URL" ] && [ "$BEEKEEPER_URL" != "null" ]; then
+            install_deb "Beekeeper Studio" "$BEEKEEPER_URL"
+        fi
     fi
 
     # Zoom
     if ! command -v zoom &>/dev/null; then
         log_info "Installing Zoom Workplace..."
-        TMP_DEB=$(mktemp --suffix=.deb)
-        curl -sSL https://zoom.us/client/latest/zoom_amd64.deb -o "$TMP_DEB"
-        sudo apt install -y "$TMP_DEB"
-        rm -f "$TMP_DEB"
+        install_deb "Zoom Workplace" "https://zoom.us/client/latest/zoom_amd64.deb"
     fi
 
     # OnlyOffice
     if ! command -v onlyoffice-desktopeditors &>/dev/null; then
         log_info "Installing OnlyOffice Desktop Editors..."
-        TMP_DEB=$(mktemp --suffix=.deb)
-        curl -sSL https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb -o "$TMP_DEB"
-        sudo apt install -y "$TMP_DEB"
-        rm -f "$TMP_DEB"
+        install_deb "OnlyOffice Desktop Editors" "https://download.onlyoffice.com/install/desktop/editors/linux/onlyoffice-desktopeditors_amd64.deb"
     fi
 
     # JetBrains Toolbox (AppImage)
@@ -303,38 +325,26 @@ install_desktop_apps() {
         log_info "Installing RustDesk..."
         RD_URL=$(curl -sL https://api.github.com/repos/rustdesk/rustdesk/releases/latest | jq -r '.assets[] | select(.name | match("x86_64\\.deb$")) | .browser_download_url' | head -n 1)
         if [ -n "$RD_URL" ] && [ "$RD_URL" != "null" ]; then
-            TMP_DEB=$(mktemp --suffix=.deb)
-            curl -sSL "$RD_URL" -o "$TMP_DEB"
-            sudo apt install -y "$TMP_DEB"
-            rm -f "$TMP_DEB"
+            install_deb "RustDesk" "$RD_URL"
         fi
     fi
 
     # VS Code
     if ! command -v code &>/dev/null; then
         log_info "Installing Visual Studio Code..."
-        TMP_DEB=$(mktemp --suffix=.deb)
-        curl -sSL 'https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64' -o "$TMP_DEB"
-        sudo apt install -y "$TMP_DEB"
-        rm -f "$TMP_DEB"
+        install_deb "Visual Studio Code" "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
     fi
 
     # Microsoft Edge
     if ! command -v microsoft-edge &>/dev/null && ! command -v microsoft-edge-stable &>/dev/null; then
         log_info "Installing Microsoft Edge..."
-        TMP_DEB=$(mktemp --suffix=.deb)
-        curl -sSL 'https://go.microsoft.com/fwlink?linkid=2149051' -o "$TMP_DEB"
-        sudo apt install -y "$TMP_DEB"
-        rm -f "$TMP_DEB"
+        install_deb "Microsoft Edge" "https://go.microsoft.com/fwlink?linkid=2149051"
     fi
 
     # Dropbox
     if ! dpkg -s dropbox &>/dev/null; then
         log_info "Installing Dropbox..."
-        TMP_DEB=$(mktemp --suffix=.deb)
-        curl -sSL 'https://linux.dropbox.com/packages/debian/dropbox_2020.03.04_amd64.deb' -o "$TMP_DEB"
-        sudo apt install -y "$TMP_DEB"
-        rm -f "$TMP_DEB"
+        install_deb "Dropbox" "https://linux.dropbox.com/packages/debian/dropbox_2020.03.04_amd64.deb"
     fi
 
     # nwg-dock
@@ -344,13 +354,7 @@ install_desktop_apps() {
     # Trixie or backports, move it back to the 'packages' manifest.
     if ! command -v nwg-dock &>/dev/null; then
         log_info "Installing nwg-dock (not in Trixie repositories)..."
-        NWG_DEB=$(mktemp --suffix=.deb)
-        if curl -fsSL "https://deb.debian.org/debian/pool/main/n/nwg-dock/nwg-dock_0.4.3-1_amd64.deb" -o "$NWG_DEB"; then
-            sudo apt install -y "$NWG_DEB" || log_warn "nwg-dock dependencies not satisfied"
-        else
-            log_warn "Could not download nwg-dock"
-        fi
-        rm -f "$NWG_DEB"
+        install_deb "nwg-dock" "https://deb.debian.org/debian/pool/main/n/nwg-dock/nwg-dock_0.4.3-1_amd64.deb"
     fi
 
     log_success "Desktop applications installed."
